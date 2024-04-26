@@ -2,6 +2,14 @@
 #The health record yml file is included in this package because it will never be a stand-alone interview.
 #We will be "including" other stand-alone interviews.
 ---
+objects:
+  - all_courts: ALCourtLoader.using(file_name='courts_list.xlsx')
+---
+code: |
+  trial_court = all_courts.as_court('trial_court', trial_court_index)
+  trial_court.geolocate()  
+
+---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALToolbox:phone-number-validation.yml
@@ -218,11 +226,9 @@ code: |
     
   set_progress(60)
 
-  
-
   docket_number
-  trial_court_division
-  #trial_court
+  trial_court
+
   set_progress(70)
   no_longer_living_together_date
     
@@ -300,7 +306,7 @@ fields:
       
       Not sure what county? [Check this list of cities and towns to find the county.](https://en.m.wikipedia.org/wiki/List_of_municipalities_in_Vermont#Cities)
   - County: trial_court_index
-    code: all_courts._load_courts()['address_county'].items()
+    code: all_courts.county_list(column_name="address_county")
 ---
 id: jurisdiction kickout
 question: |
